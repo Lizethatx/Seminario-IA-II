@@ -14,26 +14,26 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.neural_network import MLPRegressor
 from sklearn.metrics import mean_squared_error
 
-#file_name ='wine-Quality.csv'
-#file_name ='pima-indians-diabetes.csv'
-#Función para cargar y dividir los datos de Swedish Auto Insurance Dataset
-def read_dataAutoInsur(file_name):
+# Función para cargar y dividir los datos de Swedish Auto Insurance Dataset
+def read_dataAutoInsur():
     dataset = pd.read_csv('AutoInsurSweden.csv')
     X = dataset[['X']] #X = number of claims
-    y = dataset['Y']  #Y = total payment for all the claims in thousands of Swedish Kronor for geographical zones in Sweden
+    y = dataset['Y'] #Y = total payment for all the claims in thousands of Swedish Kronor for geographical zones in Sweden
+    # Dividir los datos en conjuntos de entrenamiento y prueba
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     return X_train, X_test, y_train, y_test
 
 # Función para cargar y dividir los datos de Wine Quality Dataset
-def read_dataWineQuality(file_name):
+def read_dataWineQuality():
     dataset = pd.read_csv('wine-Quality.csv', sep=",")
+    # Separar las características (X) y la variable objetivo (y)
     X = dataset.drop("quality", axis=1)
     y = dataset["quality"]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     return X_train, X_test, y_train, y_test
 
-# Función para cargar y dividir los datos de pima Indians Diabetes
-def read_datapima_Diabetes(file_name):
+# Función para cargar y dividir los datos de Pima Indians Diabetes
+def read_datapima_Diabetes():
     dataset = pd.read_csv('pima-indians-diabetes.csv', sep=",")
     X = dataset.drop("Class variable (0 or 1)", axis=1)
     y = dataset["Class variable (0 or 1)"]
@@ -42,9 +42,12 @@ def read_datapima_Diabetes(file_name):
 
 # Modelos de regresión
 def logistic_Regression(X_train, X_test, y_train, y_test):
-    model = LogisticRegression()
+    model = LogisticRegression(max_iter=10000)
+    # Ajustar el modelo a los datos de entrenamiento
     model.fit(X_train, y_train)
+    # Predecir en el conjunto de prueba
     y_pred = model.predict(X_test)
+    # Calcular el error cuadrático medio
     mse = mean_squared_error(y_test, y_pred)
     print("Logistic Regression Mean Squared Error:", mse)
 
@@ -76,26 +79,40 @@ def MLP(X_train, X_test, y_train, y_test, hidden_layer_sizes=(100,50), max_iter=
     mse = mean_squared_error(y_test, y_pred)
     print("MLP (Neural Network) Mean Squared Error:", mse)
 
-# # Cargar y dividir los datos
-# X_train, X_test, y_train, y_test = read_datapima_Diabetes(file_name)
-
-# # Modelos de regresión
-# logistic_Regression(X_train, X_test, y_train, y_test)
-# k_Nearest_Neighbors(X_train, X_test, y_train, y_test)
-# support_Vector_Machine(X_train, X_test, y_train, y_test)
-# naive_Bayes(X_train, X_test, y_train, y_test)
-# MLP(X_train, X_test, y_train, y_test)
-
-
 # Lista de archivos
-file_names = ['wine-Quality.csv', 'pima-indians-diabetes.csv', 'AutoInsurSweden.csv']
+file_names = ['AutoInsurSweden.csv','wine-Quality.csv', 'pima-indians-diabetes.csv']
 
-for file_name in file_names:
-    print(f"\nDataset: {file_name}")
-    X_train, X_test, y_train, y_test = read_dataWineQuality(file_name)
-    X_train, X_test, y_train, y_test = read_datapima_Diabetes(file_name)
-    #X_train, X_test, y_train, y_test = read_dataAutoInsur(file_name)
-    
-    models = [logistic_Regression, k_Nearest_Neighbors, support_Vector_Machine, naive_Bayes, MLP]
-    for model in models:
-        model(X_train, X_test, y_train, y_test)
+while True:
+    print("\nSeleccione un dataset:")
+    for i, file_name in enumerate(file_names, start=1):
+        print(f"{i}. {file_name}")
+
+    option = input("Ingrese el número del dataset que desea utilizar (o 's' para salir): ")
+
+    if option.lower() == 's':
+        break
+
+    try:
+        option = int(option)
+        if 1 <= option <= len(file_names):
+            file_name = file_names[option - 1]
+            print(f"\nDataset seleccionado: {file_name}")
+            # Cargar y dividir datos según el dataset seleccionado
+            if file_name == 'AutoInsurSweden.csv':
+                X_train, X_test, y_train, y_test = read_dataAutoInsur()
+            elif file_name == 'wine-Quality.csv':
+                X_train, X_test, y_train, y_test = read_dataWineQuality()
+            elif file_name == 'pima-indians-diabetes.csv':
+                X_train, X_test, y_train, y_test = read_datapima_Diabetes()
+                
+            # Aplicar todos los modelos al dataset seleccionado
+            logistic_Regression(X_train, X_test, y_train, y_test)
+            k_Nearest_Neighbors(X_train, X_test, y_train, y_test)
+            support_Vector_Machine(X_train, X_test, y_train, y_test)
+            naive_Bayes(X_train, X_test, y_train, y_test)
+            MLP(X_train, X_test, y_train, y_test)
+
+        else:
+            print("Número de dataset no válido. Inténtelo de nuevo.")
+    except ValueError:
+        print("Entrada no válida. Ingrese un número válido o 's' para salir.")
