@@ -1,7 +1,19 @@
 ### Ejercicio 2
 
-Implementar los métodos del Ejercicio 1 y alguna red neuronal para clasificar los
-siguientes datasets:
+*Implementar los métodos del Ejercicio 1 y alguna red neuronal para clasificar los
+siguientes datasets:*
+
+**Métodos de clasificación**
+
+• Regresión logística (Logistic Regression)
+
+• K-Vecinos Cercanos (K-Nearest Neighbors)
+
+• Maquinas Vector Soporte (Support Vector Machines)
+
+• Naive Bayes
+
+**Datasets**
 
 • Swedish Auto Insurance Dataset
 
