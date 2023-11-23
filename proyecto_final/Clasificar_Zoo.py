@@ -12,11 +12,11 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
+from sklearn import metrics
 from sklearn.naive_bayes import GaussianNB
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
-
 
 #*Librerias para evaluar las clasificaciones
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
@@ -29,16 +29,17 @@ def zoo():
     X = dataset.drop(['animal_name','type'],axis=1)
     y = dataset['type'].ravel()
     # Dividir los datos en conjuntos de entrenamiento y prueba
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.15, random_state=19)
     return X_train, X_test, y_train, y_test
+
 
 
 # Modelos de regresión
 def logistic_Regression(X_train, X_test, y_train, y_test):
     
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
+    # scaler = StandardScaler()
+    # X_train = scaler.fit_transform(X_train)
+    # X_test = scaler.transform(X_test)
 
     
     model = LogisticRegression()
@@ -49,8 +50,8 @@ def logistic_Regression(X_train, X_test, y_train, y_test):
     
     #Cálculos y resultados de las métricas utilizadas
     accuracy = accuracy_score(y_test, y_pred)
-    precision = precision_score(y_test, y_pred,average='weighted', zero_division=1)
-    recall = recall_score(y_test, y_pred,average='weighted')
+    precision = precision_score(y_test, y_pred,average='weighted')
+    recall = recall_score(y_test, y_pred,average='weighted', zero_division=1)
     f1 = f1_score(y_test, y_pred,average='weighted')
     #specificity
     confu_matrix =confusion_matrix(y_test,y_pred)
@@ -58,6 +59,7 @@ def logistic_Regression(X_train, X_test, y_train, y_test):
     specificity = tn / (tn + fp)
 
     # Graficar la matriz de confusión como un mapa de calor
+
     plt.figure(figsize=(8, 6))
     sns.heatmap(confu_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=np.unique(y_test), yticklabels=np.unique(y_test))
 
@@ -88,8 +90,8 @@ def logistic_Regression(X_train, X_test, y_train, y_test):
 
 def k_Nearest_Neighbors(X_train, X_test, y_train, y_test, n_neighbors=7):
     scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
     
     model = KNeighborsClassifier(n_neighbors=n_neighbors)
     model.fit(X_train, y_train)
@@ -98,7 +100,7 @@ def k_Nearest_Neighbors(X_train, X_test, y_train, y_test, n_neighbors=7):
     #Cálculos y resultados de las métricas utilizadas
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred,average='weighted', zero_division=1)
-    recall = recall_score(y_test, y_pred,average='weighted')
+    recall = recall_score(y_test, y_pred,average='weighted', zero_division=1)
     f1 = f1_score(y_test, y_pred,average='weighted')
     #specificity
     confu_matrix =confusion_matrix(y_test,y_pred)
@@ -137,9 +139,9 @@ def k_Nearest_Neighbors(X_train, X_test, y_train, y_test, n_neighbors=7):
     
 def support_Vector_Machine(X_train, X_test, y_train, y_test):
     
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
+    # scaler = StandardScaler()
+    # X_train = scaler.fit_transform(X_train)
+    # X_test = scaler.transform(X_test)
     
     model = SVC()
     model.fit(X_train, y_train)
@@ -148,7 +150,7 @@ def support_Vector_Machine(X_train, X_test, y_train, y_test):
     #Cálculos y resultados de las métricas utilizadas
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred,average='weighted', zero_division=1)
-    recall = recall_score(y_test, y_pred,average='weighted')
+    recall = recall_score(y_test, y_pred,average='weighted', zero_division=1)
     f1 = f1_score(y_test, y_pred,average='weighted')
     #specificity
     confu_matrix =confusion_matrix(y_test,y_pred)
@@ -188,9 +190,9 @@ def support_Vector_Machine(X_train, X_test, y_train, y_test):
     
 def naive_Bayes(X_train, X_test, y_train, y_test):
 
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
+    # scaler = StandardScaler()
+    # X_train = scaler.fit_transform(X_train)
+    # X_test = scaler.transform(X_test)
 
     model = GaussianNB()
     model.fit(X_train, y_train)
@@ -199,13 +201,13 @@ def naive_Bayes(X_train, X_test, y_train, y_test):
     #Cálculos y resultados de las métricas utilizadas
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred,average='weighted', zero_division=1)
-    recall = recall_score(y_test, y_pred,average='weighted')
+    recall = recall_score(y_test, y_pred,average='weighted', zero_division=1)
     f1 = f1_score(y_test, y_pred,average='weighted')
     #specificity
     confu_matrix =confusion_matrix(y_test,y_pred)
     tn, fp, fn, tp = confu_matrix.ravel()[:4]
     specificity = tn / (tn + fp)
-    
+
 
     # Graficar la matriz de confusión como un mapa de calor
     plt.figure(figsize=(8, 6))
@@ -238,9 +240,9 @@ def naive_Bayes(X_train, X_test, y_train, y_test):
     
 def MLP(X_train, X_test, y_train, y_test, hidden_layer_sizes=(100,50), max_iter=2000):
     
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
+    # scaler = StandardScaler()
+    # X_train = scaler.fit_transform(X_train)
+    # X_test = scaler.transform(X_test)
     
     model = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes, max_iter=max_iter)
     model.fit(X_train, y_train)
@@ -248,8 +250,8 @@ def MLP(X_train, X_test, y_train, y_test, hidden_layer_sizes=(100,50), max_iter=
     
     #Cálculos y resultados de las métricas utilizadas
     accuracy = accuracy_score(y_test, y_pred)
-    precision = precision_score(y_test, y_pred,average='weighted', zero_division=1)
-    recall = recall_score(y_test, y_pred,average='weighted')
+    precision = precision_score(y_test, y_pred,average='weighted')
+    recall = recall_score(y_test, y_pred,average='weighted', zero_division=1)
     f1 = f1_score(y_test, y_pred,average='weighted')
     #specificity
     confu_matrix =confusion_matrix(y_test,y_pred)
