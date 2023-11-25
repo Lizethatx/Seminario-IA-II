@@ -24,25 +24,20 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_recall_fscore_support
 
 def zoo():
+
     #cargar y dividir los datos de zoo dataset
     dataset = pd.read_csv('zoo.csv')
     X = dataset.drop(['animal_name','type'],axis=1)
-    y = dataset['type'].ravel()
+    y = dataset['type']
     # Dividir los datos en conjuntos de entrenamiento y prueba
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.15, random_state=19)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7)
     return X_train, X_test, y_train, y_test
 
 
 
 # Modelos de regresión
 def logistic_Regression(X_train, X_test, y_train, y_test):
-    
-    # scaler = StandardScaler()
-    # X_train = scaler.fit_transform(X_train)
-    # X_test = scaler.transform(X_test)
-
-    
-    model = LogisticRegression()
+    model = LogisticRegression(max_iter=10000)
     # Ajustar el modelo a los datos de entrenamiento
     model.fit(X_train, y_train)
     # Predecir en el conjunto de prueba
@@ -50,7 +45,7 @@ def logistic_Regression(X_train, X_test, y_train, y_test):
     
     #Cálculos y resultados de las métricas utilizadas
     accuracy = accuracy_score(y_test, y_pred)
-    precision = precision_score(y_test, y_pred,average='weighted')
+    precision = precision_score(y_test, y_pred,average='weighted', zero_division=1)
     recall = recall_score(y_test, y_pred,average='weighted', zero_division=1)
     f1 = f1_score(y_test, y_pred,average='weighted')
     #specificity
@@ -88,12 +83,8 @@ def logistic_Regression(X_train, X_test, y_train, y_test):
         plt.text(i, value + 0.01, f'{value:.3f}', ha='center', va='bottom')
     plt.show()
 
-def k_Nearest_Neighbors(X_train, X_test, y_train, y_test, n_neighbors=7):
-    scaler = StandardScaler()
-    X_train = scaler.fit_transform(X_train)
-    X_test = scaler.transform(X_test)
-    
-    model = KNeighborsClassifier(n_neighbors=n_neighbors)
+def k_Nearest_Neighbors(X_train, X_test, y_train, y_test):
+    model = KNeighborsClassifier(n_neighbors=5)
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
     
@@ -139,11 +130,7 @@ def k_Nearest_Neighbors(X_train, X_test, y_train, y_test, n_neighbors=7):
     
 def support_Vector_Machine(X_train, X_test, y_train, y_test):
     
-    # scaler = StandardScaler()
-    # X_train = scaler.fit_transform(X_train)
-    # X_test = scaler.transform(X_test)
-    
-    model = SVC()
+    model = SVC(C=1.0)
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
     
@@ -189,11 +176,6 @@ def support_Vector_Machine(X_train, X_test, y_train, y_test):
     
     
 def naive_Bayes(X_train, X_test, y_train, y_test):
-
-    # scaler = StandardScaler()
-    # X_train = scaler.fit_transform(X_train)
-    # X_test = scaler.transform(X_test)
-
     model = GaussianNB()
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
@@ -239,10 +221,7 @@ def naive_Bayes(X_train, X_test, y_train, y_test):
     plt.show()
     
 def MLP(X_train, X_test, y_train, y_test, hidden_layer_sizes=(100,50), max_iter=2000):
-    
-    # scaler = StandardScaler()
-    # X_train = scaler.fit_transform(X_train)
-    # X_test = scaler.transform(X_test)
+
     
     model = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes, max_iter=max_iter)
     model.fit(X_train, y_train)
@@ -250,7 +229,7 @@ def MLP(X_train, X_test, y_train, y_test, hidden_layer_sizes=(100,50), max_iter=
     
     #Cálculos y resultados de las métricas utilizadas
     accuracy = accuracy_score(y_test, y_pred)
-    precision = precision_score(y_test, y_pred,average='weighted')
+    precision = precision_score(y_test, y_pred,average='weighted', zero_division=1)
     recall = recall_score(y_test, y_pred,average='weighted', zero_division=1)
     f1 = f1_score(y_test, y_pred,average='weighted')
     #specificity
@@ -292,7 +271,7 @@ def MLP(X_train, X_test, y_train, y_test, hidden_layer_sizes=(100,50), max_iter=
 # Evaluar los clasificadores
 X_train, X_test, y_train, y_test = zoo()
 logistic_Regression(X_train, X_test, y_train, y_test)
-k_Nearest_Neighbors(X_train, X_test, y_train, y_test, n_neighbors=7)
+k_Nearest_Neighbors(X_train, X_test, y_train, y_test)
 support_Vector_Machine(X_train, X_test, y_train, y_test)
 naive_Bayes(X_train, X_test, y_train, y_test)
-MLP(X_train, X_test, y_train, y_test, hidden_layer_sizes=(100,50), max_iter=2000)
+MLP(X_train, X_test, y_train, y_test, hidden_layer_sizes=(16,16), max_iter=1000)
